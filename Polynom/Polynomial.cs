@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Linq;
 
 namespace Polynom
 {
     public class Polynomial
     {
         public double[] Coefficients { get; set; } // maybe should use list
-        public double this[int degree]
+        public long Degree { get => Coefficients.Length; }
+        public double this[long degree]
         {
             get => Coefficients[degree];
             set => Coefficients[degree] = value;
         }
         public Polynomial() {}
-        public Polynomial(int degree)
+        public Polynomial(long degree)
         {
             Coefficients = new double[degree + 1];
         }
@@ -59,6 +61,14 @@ namespace Polynom
         public void Print()
         {
             throw new NotImplementedException();
+        }
+        public override bool Equals(object obj)
+        {
+            Polynomial toCheck = obj as Polynomial;
+            if (toCheck == null || Degree != toCheck.Degree)
+                return false;
+
+            return Coefficients.SequenceEqual(toCheck.Coefficients);            
         }
 
     }
