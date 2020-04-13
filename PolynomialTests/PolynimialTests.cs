@@ -20,12 +20,12 @@ namespace PolynomialTests
             Polynomial expectedResult1 = new Polynomial(new double[] { 2, 3, 1, 5, 6 });
             Assert.AreEqual(expectedResult1, polynom + sameSize);
 
-            Polynomial bigger = new Polynomial(new double[] { 73, 1, 1, 1, 1, 1 });
-            Polynomial expectedResult2 = new Polynomial(new double[] { 73, 2, 3, 1, 5, 6 });
+            Polynomial bigger = new Polynomial(new double[] { 1, 1, 1, 1, 1, 73 });
+            Polynomial expectedResult2 = new Polynomial(new double[] { 2, 3, 1, 5, 6, 73 });
             Assert.AreEqual(expectedResult2, polynom + bigger);
 
             Polynomial smaller = new Polynomial(new double[] { 1, 1 });
-            Polynomial expectedResult3 = new Polynomial(new double[] { 2, 3, 1, 5, 6 });
+            Polynomial expectedResult3 = new Polynomial(new double[] { 2, 3, 0, 4, 5 });
             Assert.AreEqual(expectedResult3, polynom + smaller);
 
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom + null; });
@@ -37,12 +37,12 @@ namespace PolynomialTests
             Polynomial expectedResult1 = new Polynomial(new double[] { 0, 1, -1, 3, 4 });
             Assert.AreEqual(expectedResult1, polynom - sameSize);
 
-            Polynomial bigger = new Polynomial(new double[] { 73, 1, 1, 1, 1, 1 });
-            Polynomial expectedResult2 = new Polynomial(new double[] { -73, 0, 1, -1, 3, 4 });
+            Polynomial bigger = new Polynomial(new double[] { 1, 1, 1, 1, 1, 73 });
+            Polynomial expectedResult2 = new Polynomial(new double[] { 0, 1, -1, 3, 4, -73 });
             Assert.AreEqual(expectedResult2, polynom - bigger);
 
             Polynomial smaller = new Polynomial(new double[] { 1, 1 });
-            Polynomial expectedResult3 = new Polynomial(new double[] { 1, 2, 0, 3, 4 });
+            Polynomial expectedResult3 = new Polynomial(new double[] { 0, 1, 0, 4, 5 });
             Assert.AreEqual(expectedResult3, polynom - smaller);
 
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom - null; });
@@ -51,8 +51,18 @@ namespace PolynomialTests
         public void TestMultiplication()
         {
             Polynomial sameSize = new Polynomial(new double[] { 1, 1, 1, 1, 1 });
-            Polynomial expectedResult1 = new Polynomial(new double[] { 5, 9, 9, 11, 12, 7, 3, 3, 1 });
-            Assert.AreEqual(expectedResult1, polynom * sameSize);            
+            Polynomial expectedResult = new Polynomial(new double[] { 1, 3, 3, 7, 12, 11, 9, 9, 5 });
+            Assert.AreEqual(expectedResult, polynom * sameSize);
+
+            //  { 1, 2, 0, 4, 5 }
+
+            Polynomial bigger = new Polynomial(new double[] { 1, 1, 1, 1, 1, 73 });
+            Polynomial expectedResult2 = new Polynomial(new double[] { 1, 3, 3, 7, 12, 84, 155, 9, 297, 365 });
+            Assert.AreEqual(expectedResult2, polynom * bigger);
+
+            Polynomial smaller = new Polynomial(new double[] { 1, 1 });
+            Polynomial expectedResult3 = new Polynomial(new double[] { 1, 3, 2, 4, 9, 5 });
+            Assert.AreEqual(expectedResult3, polynom * smaller);
 
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom * null; });
         }
