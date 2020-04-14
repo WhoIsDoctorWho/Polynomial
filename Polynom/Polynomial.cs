@@ -7,7 +7,15 @@ namespace Polynom
     public class Polynomial
     {        
         public SortedDictionary<long, double> Nodes { get; set; }        
-        public long Degree { get => Nodes.Keys.Max(); }
+        public long Degree 
+        {
+            get
+            {
+                if (Nodes?.Keys == null || Nodes.Keys.Count == 0)
+                    return 0;
+                return Nodes.Keys.Max();
+            }
+        }
         public double this[long degree]
         {            
             get 
@@ -66,12 +74,12 @@ namespace Polynom
         {
             if (p1 == null)
                 throw new ArgumentException("Cannot add these values");
-
-            Polynomial result = new Polynomial();            
-
-            result.Nodes = new SortedDictionary<long, double>(p1.Nodes
-                .Select(node => new { key = node.Key, value = node.Value * number })
-                .ToDictionary(node => node.key, node => node.value));
+            
+            Polynomial result = new Polynomial(
+                new SortedDictionary<long, double>(p1.Nodes
+                .Select(node => new { key = node.Key, value = node.Value * number }) 
+                .Where(node => node.value != 0)
+                .ToDictionary(node => node.key, node => node.value)));
 
             return result;
         }

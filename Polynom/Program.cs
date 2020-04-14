@@ -8,6 +8,7 @@ namespace Polynom
         static void Main(string[] args)
         {
             Polynomial p = new Polynomial(new double[] { 1, 2, 3, 4, 5 });
+            Polynomial t = p * 0;
             p.Print();
         }
     }
