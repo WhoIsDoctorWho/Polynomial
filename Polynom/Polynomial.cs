@@ -88,6 +88,50 @@ namespace Polynom
         {         
             return p1 * number;
         }
+        public Polynomial Integrate()
+        {
+            Polynomial result = new Polynomial(
+                new SortedDictionary<long, double>(Nodes
+                .Select(node => new { key = node.Key + 1, value = node.Value/(node.Key+1) })
+                .ToDictionary(node => node.key, node => node.value)));               
+            return result;
+        }
+        public double Integrate(double lowerBound, double upperBound)
+        {
+            Polynomial integral = Integrate();
+            return integral.Function(upperBound) - integral.Function(lowerBound);
+        }
+        private Polynomial Derivative()
+        {
+            Polynomial result = new Polynomial(
+                new SortedDictionary<long, double>(Nodes
+                .Where(node => node.Key > 0)
+                .Select(node => new { key = node.Key - 1, value = node.Value * node.Key })
+                .ToDictionary(node => node.key, node => node.value)));
+            return result;
+        }
+        public Polynomial Derivative(int derivarives = 1)
+        {
+            Polynomial result = Derivative();
+            for(int i = 1; i < derivarives && result.Nodes.Any(); i++)
+            {
+                result = result.Derivative();
+            }
+            return result;
+        }
+        public double Derivative(double x, int derivarives = 1)
+        {
+            return Derivative(derivarives).Function(x);
+        }
+        public double Function(double x)
+        {
+            double result = 0;
+            foreach (KeyValuePair<long, double> node in Nodes) 
+            {
+                result += node.Value * Math.Pow(x, node.Key);
+            }
+            return result;
+        }
         public void Print()
         {
             Console.WriteLine(this);

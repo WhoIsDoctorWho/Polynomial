@@ -19,7 +19,7 @@ namespace PolynomialTests
             libPolynom = new LibPolynomial(values); 
         }
         [Test]
-        public void TestAdditionWithLib()
+        public void TestAddition()
         {
             double[] sameSizeArr = new double[] { 17, 1, -13, 1, 0 };
             Polynomial sameSize = new Polynomial(sameSizeArr);
@@ -34,7 +34,7 @@ namespace PolynomialTests
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom + null; });
         }
         [Test]
-        public void TestSubstionWithLib()
+        public void TestSubstion()
         {
             double[] sameSizeArr = new double[] { 17, 1, -13, 1, 0 };
             Polynomial sameSize = new Polynomial(sameSizeArr);
@@ -49,7 +49,7 @@ namespace PolynomialTests
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom - null; });
         }
         [Test]
-        public void TestMultiplicationWithLib()
+        public void TestMultiplication()
         {
             double[] sameSizeArr = new double[] { 17, 1, -13, 1, 0 };
             Polynomial sameSize = new Polynomial(sameSizeArr);
@@ -64,7 +64,7 @@ namespace PolynomialTests
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom * null; });
         }
         [Test]
-        public void TestMultOnNumberWithLib()
+        public void TestMultOnNumber()
         {
             double positive = 73;
             double negative = -73;
@@ -72,74 +72,51 @@ namespace PolynomialTests
             double[] values = new double[] { 1, 2, 0, 4, 5 };
             LibPolynomial onPositive = new LibPolynomial(values.Select(x => x * positive).ToArray());
             LibPolynomial onNegative = new LibPolynomial(values.Select(x => x * negative).ToArray());
-            LibPolynomial onZero = new LibPolynomial(values.Select(x => x * zero).ToArray());
+            LibPolynomial onZero = new LibPolynomial(values.Select(x => x * zero).ToArray());            
 
             Assert.True(PolynomialEquality(polynom * positive, onPositive));
             Assert.True(PolynomialEquality(polynom * negative, onNegative));
             Assert.True(PolynomialEquality(polynom * zero, onZero));
 
-        }
-        [Test]
-        public void TestAddition()
-        {
-            Polynomial sameSize = new Polynomial(new double[] { 1, 1, 1, 1, 1 });
-            Polynomial expectedResult1 = new Polynomial(new double[] { 2, 3, 1, 5, 6 });
-            Assert.AreEqual(expectedResult1, polynom + sameSize);
-
-            Polynomial bigger = new Polynomial(new double[] { 1, 1, 1, 1, 1, 73 });
-            Polynomial expectedResult2 = new Polynomial(new double[] { 2, 3, 1, 5, 6, 73 });
-            Assert.AreEqual(expectedResult2, polynom + bigger);
-
-            Polynomial smaller = new Polynomial(new double[] { 1, 1 });
-            Polynomial expectedResult3 = new Polynomial(new double[] { 2, 3, 0, 4, 5 });
-            Assert.AreEqual(expectedResult3, polynom + smaller);
-
-            Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom + null; });
-        }
-        [Test]
-        public void TestSubstraction()
-        {
-            Polynomial sameSize = new Polynomial(new double[] { 1, 1, 1, 1, 1 });
-            Polynomial expectedResult1 = new Polynomial(new double[] { 0, 1, -1, 3, 4 });
-            Assert.AreEqual(expectedResult1, polynom - sameSize);
-
-            Polynomial bigger = new Polynomial(new double[] { 1, 1, 1, 1, 1, 73 });
-            Polynomial expectedResult2 = new Polynomial(new double[] { 0, 1, -1, 3, 4, -73 });
-            Assert.AreEqual(expectedResult2, polynom - bigger);
-
-            Polynomial smaller = new Polynomial(new double[] { 1, 1 });
-            Polynomial expectedResult3 = new Polynomial(new double[] { 0, 1, 0, 4, 5 });
-            Assert.AreEqual(expectedResult3, polynom - smaller);
-
-            Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom - null; });
-        }
-        [Test]
-        public void TestMultiplication()
-        {
-            Polynomial sameSize = new Polynomial(new double[] { 1, 1, 1, 1, 1 });
-            Polynomial expectedResult = new Polynomial(new double[] { 1, 3, 3, 7, 12, 11, 9, 9, 5 });
-            Assert.AreEqual(expectedResult, polynom * sameSize);            
-
-            Polynomial bigger = new Polynomial(new double[] { 1, 1, 1, 1, 1, 73 });
-            Polynomial expectedResult2 = new Polynomial(new double[] { 1, 3, 3, 7, 12, 84, 155, 9, 297, 365 });
-            Assert.AreEqual(expectedResult2, polynom * bigger);
-
-            Polynomial smaller = new Polynomial(new double[] { 1, 1 });
-            Polynomial expectedResult3 = new Polynomial(new double[] { 1, 3, 2, 4, 9, 5 });
-            Assert.AreEqual(expectedResult3, polynom * smaller);
-
-            Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom * null; });
-        }
+            Polynomial nullPolynomial = null;
+            Assert.Throws(typeof(ArgumentException), () => { Polynomial test = nullPolynomial * 42.1; });
+        }         
         [Test]
         public void TestToString()
         {
             Assert.AreEqual("f(x) = 5x^4 + 4x^3 + 2x + 1", polynom.ToString());
-            Assert.AreEqual("f(x) = 0", (new Polynomial()).ToString());
+            Assert.AreEqual("f(x) = 0", (new Polynomial()).ToString());            
+        }
+        [Test]
+        public void TestFunction()
+        {
+            Assert.AreEqual(polynom.Function(-10), libPolynom.ValueAt(-10));
+            Assert.AreEqual(polynom.Function(0), libPolynom.ValueAt(0));
+            Assert.AreEqual(polynom.Function(999), libPolynom.ValueAt(999));
+        }
+        [Test]
+        public void TestIntegral()
+        {            
+            Assert.AreEqual(polynom.Integrate(0, 10), libPolynom.Integral(0, 10));            
+            Assert.AreEqual(polynom.Integrate(-10, 10), libPolynom.Integral(-10, 10));
+        }
+        [Test]
+        public void TestDerivative()
+        {                    
+            Assert.True(PolynomialEquality(polynom.Derivative(), 
+                libPolynom.GetDerivative() as LibPolynomial));
+            Assert.True(PolynomialEquality(polynom.Derivative(2),
+                libPolynom.GetDerivative().GetDerivative() as LibPolynomial));
+
+            double x = 73;
+            Assert.AreEqual(polynom.Derivative(x), libPolynom.GetDerivative().ValueAt(x));
+            Assert.AreEqual(polynom.Derivative(x, 3), 
+                libPolynom.GetDerivative().GetDerivative().GetDerivative().ValueAt(x));
         }
 
         private static bool PolynomialEquality(Polynomial p1, LibPolynomial p2)
         {            
-            if (p1.Degree != p2.Degree)
+            if (p1 == null || p2 == null || p1.Degree != p2.Degree)
                 return false;
             for (int i = 0; i < p1.Degree; i++)
             {
