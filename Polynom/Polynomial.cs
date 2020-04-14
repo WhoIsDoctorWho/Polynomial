@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Polynom
 {
@@ -89,15 +90,7 @@ namespace Polynom
         }
         public void Print()
         {
-            var reversedNodes = Nodes.Reverse();
-            foreach (var node in reversedNodes)
-            {
-                Console.Write($"{node.Value}x^{node.Key} ");
-                if (node.Key != Nodes.Keys.Min())
-                    Console.Write("+ ");
-                else
-                    Console.Write("= 0");
-            }
+            Console.WriteLine(this);
         }
         public override bool Equals(object obj)
         {
@@ -106,6 +99,28 @@ namespace Polynom
                 return false;            
             bool result = Nodes.SequenceEqual(toCheck.Nodes);
             return result;
+        }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("f(x) = ", Nodes.Count * 8); // f(x) = ax^m + bx^n + cx^k
+
+            if(Nodes.Count == 0) // f(x) = 0
+                return sb.Append(0).ToString();
+
+            var reversedNodes = Nodes.Reverse();
+            long minKey = Nodes.Keys.Min();
+            foreach (KeyValuePair<long, double> node in reversedNodes)
+            {
+                if (node.Key != 0 && node.Key != 1)
+                    sb.Append($"{node.Value}x^{node.Key}");
+                else if(node.Key == 1)
+                    sb.Append(node.Value + "x");
+                else 
+                    sb.Append(node.Value);
+                if (node.Key != minKey)
+                    sb.Append(" + ");
+            }
+            return sb.ToString();
         }
         private static Polynomial SumOfPolynomials(Polynomial p1, Polynomial p2, Operation operation)
         {

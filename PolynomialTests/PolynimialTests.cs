@@ -130,6 +130,12 @@ namespace PolynomialTests
 
             Assert.Throws(typeof(ArgumentException), () => { Polynomial test = polynom * null; });
         }
+        [Test]
+        public void TestToString()
+        {
+            Assert.AreEqual("f(x) = 5x^4 + 4x^3 + 2x + 1", polynom.ToString());
+            Assert.AreEqual("f(x) = 0", (new Polynomial()).ToString());
+        }
 
         private static bool PolynomialEquality(Polynomial p1, LibPolynomial p2)
         {            
